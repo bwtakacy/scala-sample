@@ -51,9 +51,10 @@ object SimpleProducer {
 		val producer = new Producer[String, String](config)
 
 		// generate message ID
-		private val SEP = ":" // message field separator
-		private val messageIdLabel = "MID"
-		private val threadIdLabel = "TID"
+		private val SEP = ":" // separator between field name and value
+		private val FSEP = " " // separator between fields
+		private val messageIdLabel = "MessageID"
+		private val threadIdLabel = "ThreadID"
 		private val topicLabel = "Topic"
 		private val contentLabel = "CONTENT"
 
@@ -63,13 +64,15 @@ object SimpleProducer {
 			msg.append(topicLabel)
 			msg.append(SEP)
 			msg.append(topic)
+			msg.append(FSEP)
 			msg.append(threadIdLabel)
 			msg.append(SEP)
 			msg.append(threadId)
+			msg.append(FSEP)
 			msg.append(messageIdLabel)
 			msg.append(SEP)
 			msg.append(msgId)
-			msg.append(" ")
+			msg.append(FSEP)
 			msg.append(contentLabel)
 			msg.append(SEP)
 			msg.append("<MESSAGE>")
