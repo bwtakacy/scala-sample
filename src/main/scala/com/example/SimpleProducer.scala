@@ -55,6 +55,7 @@ object SimpleProducer {
 		private val messageIdLabel = "MID"
 		private val threadIdLabel = "TID"
 		private val topicLabel = "Topic"
+		private val contentLabel = "CONTENT"
 
 		private def generateMessageWithSeqId 
 				(topic: String, msgId: Long) : KeyedMessage[String, String] = {
@@ -68,7 +69,10 @@ object SimpleProducer {
 			msg.append(messageIdLabel)
 			msg.append(SEP)
 			msg.append(msgId)
-			msg.append("<This is message from my simple producers.>")
+			msg.append(" ")
+			msg.append(contentLabel)
+			msg.append(SEP)
+			msg.append("<MESSAGE>")
 			new KeyedMessage[String, String](topic, "SP", msg.result)
 		}
 
