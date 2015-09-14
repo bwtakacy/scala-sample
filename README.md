@@ -26,5 +26,5 @@ $ activator run "localhost:9092 test 2 10"
 or
 
 ```
-$ sbt run "localhost:9092 test 2 10"
+$ sbt "run localhost:9092 test 2 10"
 ```
