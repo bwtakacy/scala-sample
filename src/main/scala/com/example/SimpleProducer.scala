@@ -3,6 +3,7 @@ package com.example
 import java.util.Properties
 import java.util.concurrent.{CountDownLatch, Executors}
 import java.util.concurrent.atomic.AtomicLong
+import java.net.InetAddress
 import kafka.producer.{KeyedMessage, ProducerConfig, Producer}
 
 object SimpleProducer {
@@ -23,18 +24,19 @@ object SimpleProducer {
 		val Array(brokerList, topicName, numThreadsStr, numMessagesStr) = args
 		val numThreads = numThreadsStr.toInt
 		val numMessages = numMessagesStr.toLong
-
+		val hostName = InetAddress.getLocalHost().getHostName()
 		val executor = Executors.newFixedThreadPool(numThreads)
 		val allDone = new CountDownLatch(numThreads)
 
 		for ( i <- 0 until numThreads) {
-			executor.execute(new ProducerThread(i, brokerList, topicName, numMessages, allDone))
+			executor.execute(new ProducerThread(hostName, i, brokerList, topicName, numMessages, allDone))
 		}
 
 		allDone.await()
 	}
 
-	class ProducerThread(val threadId: Int, 
+	class ProducerThread(val hostName: String,
+			val threadId: Int, 
 			val brokerList: String,
 			val topic: String,
 			val numMessages: Long,
@@ -57,13 +59,14 @@ object SimpleProducer {
 		private val threadIdLabel = "ThreadID"
 		private val topicLabel = "Topic"
 		private val contentLabel = "CONTENT"
+		private val hostNameLabel = "Host"
 
 		private def generateMessageWithSeqId 
 				(topic: String, msgId: Long) : KeyedMessage[String, String] = {
 			val msg = new StringBuilder
-			msg.append(topicLabel)
+			msg.append(hostNameLabel)
 			msg.append(SEP)
-			msg.append(topic)
+			msg.append(hostName)
 			msg.append(FSEP)
 			msg.append(threadIdLabel)
 			msg.append(SEP)
@@ -75,7 +78,7 @@ object SimpleProducer {
 			msg.append(FSEP)
 			msg.append(contentLabel)
 			msg.append(SEP)
-			msg.append("<MESSAGE>")
+			msg.append("<Zamzar>")
 			new KeyedMessage[String, String](topic, "SP", msg.result)
 		}
 
