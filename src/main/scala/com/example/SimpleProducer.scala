@@ -74,7 +74,7 @@ object SimpleProducer {
 			msg.append(FSEP)
 			msg.append(messageIdLabel)
 			msg.append(SEP)
-			msg.append(msgId)
+			msg.append(String.format("%05d", long2Long(msgId)))
 			msg.append(FSEP)
 			msg.append(contentLabel)
 			msg.append(SEP)
