@@ -1,5 +1,6 @@
 package com.example
 
+import java.util.Random
 import java.util.Properties
 import java.util.concurrent.{CountDownLatch, Executors}
 import java.util.concurrent.atomic.AtomicLong
@@ -27,9 +28,10 @@ object SimpleProducer {
 		val hostName = InetAddress.getLocalHost().getHostName()
 		val executor = Executors.newFixedThreadPool(numThreads)
 		val allDone = new CountDownLatch(numThreads)
+		val rand = new java.util.Random
 
 		for ( i <- 0 until numThreads) {
-			executor.execute(new ProducerThread(hostName, i, brokerList, topicName, numMessages, allDone))
+			executor.execute(new ProducerThread(hostName, i, brokerList, topicName, numMessages, rand, allDone))
 		}
 
 		allDone.await()
@@ -40,6 +42,7 @@ object SimpleProducer {
 			val brokerList: String,
 			val topic: String,
 			val numMessages: Long,
+			val rand: Random,
 			val allDone: CountDownLatch)
 		extends Runnable {
 
@@ -76,10 +79,10 @@ object SimpleProducer {
 			msg.append(SEP)
 			msg.append(String.format("%05d", long2Long(msgId)))
 			msg.append(FSEP)
-			msg.append(contentLabel)
-			msg.append(SEP)
-			msg.append("<Zamzar>")
-			new KeyedMessage[String, String](topic, "SP", msg.result)
+			//msg.append(contentLabel)
+			//msg.append(SEP)
+			//msg.append("<Zamzar>")
+			new KeyedMessage[String, String](topic, msg.result, rand.nextInt.toString)
 		}
 
 		override def run {
