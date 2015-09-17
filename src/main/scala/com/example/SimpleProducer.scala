@@ -35,6 +35,7 @@ object SimpleProducer {
 		}
 
 		allDone.await()
+		System.exit(0)
 	}
 
 	class ProducerThread(val hostName: String,
@@ -51,6 +52,8 @@ object SimpleProducer {
 		props.put("metadata.broker.list", brokerList)
 		props.put("serializer.class", "kafka.serializer.StringEncoder")
 		props.put("request.required.acks", "1")
+		props.put("message.send.max.retries", "10000")
+		props.put("retry.backoff.ms", "1000")
 
 		val config = new ProducerConfig(props)
 		val producer = new Producer[String, String](config)
